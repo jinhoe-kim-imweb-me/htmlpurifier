@@ -266,9 +266,11 @@ class HTMLPurifier_DefinitionCache_SerializerTest extends HTMLPurifier_Definitio
 
     private function invokeSafeUnlink($cache, $file)
     {
-        $method = new ReflectionMethod('HTMLPurifier_DefinitionCache_Serializer', 'safeUnlink');
-        $method->setAccessible(true);
-        return $method->invoke($cache, $file);
+        $callable = Closure::bind(function ($file) {
+            return $this->safeUnlink($file);
+        }, $cache, 'HTMLPurifier_DefinitionCache_Serializer');
+
+        return $callable($file);
     }
 }
 
